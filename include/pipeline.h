@@ -1,65 +1,47 @@
 #pragma once
 
-#include "gps_point.h"
-#include "filters/filter.h"
-#include <pipeline/pipeline.h>
-#include <memory>
+#include <string>
 #include <vector>
-#include <deque>
-#include <mutex>
-
-namespace gps {
+#include <memory>
+#include <utility>
+#include "parser.h"
+#include "history.h"
+#include "filter_interface.h"
+#include "display_interface.h"
 
 class GpsPipeline {
 public:
-    explicit GpsPipeline(size_t historySize = 10);
+    explicit GpsPipeline(std::unique_ptr<IDisplay> display);
     ~GpsPipeline();
     
-    GpsPipeline(const GpsPipeline&) = delete;
-    GpsPipeline& operator=(const GpsPipeline&) = delete;
-    GpsPipeline(GpsPipeline&& other) noexcept;
-    GpsPipeline& operator=(GpsPipeline&& other) noexcept;
+    // Добавление фильтров
+    void addFilter(std::unique_ptr<IGpsFilter> filter, int priority = 0);
     
-    // Управление фильтрами
-    void addFilter(std::unique_ptr<Filter> filter);
-    void removeFilter(size_t index);
-    void clearFilters();
+    // Обработка одной NMEA строки (основной метод)
+    void process(const std::string& nmeaLine);
     
-    void enableFilter(size_t index, bool enabled);
-    Filter* getFilter(size_t index);
-    const Filter* getFilter(size_t index) const;
-    size_t getFilterCount() const;
-    
-    // Обработка точки
-    FilterResult process(GpsPoint& point);
-    
-    // Управление историей
+    // Настройка
     void setHistorySize(size_t size);
-    size_t getHistorySize() const;
-    const std::deque<GpsPoint>& getHistory() const;
-    void clearHistory();
+    GpsHistory& getHistory();
+    const GpsHistory& getHistory() const;
     
     // Статистика
-    size_t getProcessedCount() const;
-    size_t getRejectedCount() const;
-    size_t getStoppedCount() const;
-    void resetStats();
-
+    int getProcessedCount() const;
+    int getValidCount() const;
+    int getRejectedCount() const;
+    int getErrorCount() const;
+    
 private:
-    void updateHistory(const GpsPoint& point);
-    void cleanup();
+    void applyFilters(GpsPoint& point);
     
-    pipeline* pipeline_;
-    std::vector<std::unique_ptr<Filter>> filters_;
-    mutable std::deque<GpsPoint> history_;
-    size_t historySize_;
+    NmeaParser parser_;
+    GpsHistory history_;
+    std::unique_ptr<IDisplay> display_;
     
-    // Статистика
-    size_t processedCount_;
-    size_t rejectedCount_;
-    size_t stoppedCount_;
+    std::vector<std::pair<int, std::unique_ptr<IGpsFilter>>> filters_;
     
-    mutable std::mutex mutex_;
+    int processedCount_ = 0;
+    int validCount_ = 0;
+    int rejectedCount_ = 0;
+    int errorCount_ = 0;
 };
-
-} // namespace gps
