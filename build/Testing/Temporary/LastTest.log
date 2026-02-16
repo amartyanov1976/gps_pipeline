@@ -1,0 +1,248 @@
+Start testing: Feb 16 16:16 +05
+----------------------------------------------------------
+1/1 Testing: GpsTests
+1/1 Test: GpsTests
+Command: "/home/amartyanov/git/gps_pipeline/build/bin/gps_tests"
+Directory: /home/amartyanov/git/gps_pipeline/build
+"GpsTests" start time: Feb 16 16:16 +05
+Output:
+----------------------------------------------------------
+Running main() from ./googletest/src/gtest_main.cc
+[==========] Running 97 tests from 10 test suites.
+[----------] Global test environment set-up.
+[----------] 13 tests from ParserTest
+[ RUN      ] ParserTest.ValidateChecksum_ValidChecksum_ReturnsTrue
+[       OK ] ParserTest.ValidateChecksum_ValidChecksum_ReturnsTrue (0 ms)
+[ RUN      ] ParserTest.ValidateChecksum_InvalidChecksum_ReturnsFalse
+[       OK ] ParserTest.ValidateChecksum_InvalidChecksum_ReturnsFalse (0 ms)
+[ RUN      ] ParserTest.ValidateChecksum_NoAsterisk_ReturnsFalse
+[       OK ] ParserTest.ValidateChecksum_NoAsterisk_ReturnsFalse (0 ms)
+[ RUN      ] ParserTest.ConvertNmeaCoordinate_NorthHemisphere_ReturnsCorrectDegrees
+[       OK ] ParserTest.ConvertNmeaCoordinate_NorthHemisphere_ReturnsCorrectDegrees (0 ms)
+[ RUN      ] ParserTest.ConvertNmeaCoordinate_SouthHemisphere_ReturnsNegativeDegrees
+[       OK ] ParserTest.ConvertNmeaCoordinate_SouthHemisphere_ReturnsNegativeDegrees (0 ms)
+[ RUN      ] ParserTest.ConvertNmeaCoordinate_EastHemisphere_ReturnsCorrectDegrees
+[       OK ] ParserTest.ConvertNmeaCoordinate_EastHemisphere_ReturnsCorrectDegrees (0 ms)
+[ RUN      ] ParserTest.ConvertNmeaCoordinate_WestHemisphere_ReturnsNegativeDegrees
+[       OK ] ParserTest.ConvertNmeaCoordinate_WestHemisphere_ReturnsNegativeDegrees (0 ms)
+[ RUN      ] ParserTest.KnotsToKmh_ConvertsCorrectly
+[       OK ] ParserTest.KnotsToKmh_ConvertsCorrectly (0 ms)
+[ RUN      ] ParserTest.ParseTimeToMs_ValidTime_ReturnsMilliseconds
+[       OK ] ParserTest.ParseTimeToMs_ValidTime_ReturnsMilliseconds (0 ms)
+[ RUN      ] ParserTest.ParseLine_ValidRMCAndGGA_ReturnsGpsPoint
+[       OK ] ParserTest.ParseLine_ValidRMCAndGGA_ReturnsGpsPoint (0 ms)
+[ RUN      ] ParserTest.ParseLine_InvalidChecksum_ReturnsNullopt
+[       OK ] ParserTest.ParseLine_InvalidChecksum_ReturnsNullopt (0 ms)
+[ RUN      ] ParserTest.ParseLine_InvalidStatus_ReturnsInvalidPoint
+[       OK ] ParserTest.ParseLine_InvalidStatus_ReturnsInvalidPoint (0 ms)
+[ RUN      ] ParserTest.ParseLine_DifferentTimestamps_NoPoint
+[       OK ] ParserTest.ParseLine_DifferentTimestamps_NoPoint (0 ms)
+[----------] 13 tests from ParserTest (0 ms total)
+
+[----------] 8 tests from HistoryTest
+[ RUN      ] HistoryTest.NewHistory_IsEmpty
+[       OK ] HistoryTest.NewHistory_IsEmpty (0 ms)
+[ RUN      ] HistoryTest.AddPoint_IncreasesSize
+[       OK ] HistoryTest.AddPoint_IncreasesSize (0 ms)
+[ RUN      ] HistoryTest.AddPoint_RespectsMaxSize
+[       OK ] HistoryTest.AddPoint_RespectsMaxSize (0 ms)
+[ RUN      ] HistoryTest.GetLastValid_ReturnsMostRecentValidPoint
+[       OK ] HistoryTest.GetLastValid_ReturnsMostRecentValidPoint (0 ms)
+[ RUN      ] HistoryTest.GetLastValid_NoValidPoints_ReturnsNullopt
+[       OK ] HistoryTest.GetLastValid_NoValidPoints_ReturnsNullopt (0 ms)
+[ RUN      ] HistoryTest.GetLastValid_EmptyHistory_ReturnsNullopt
+[       OK ] HistoryTest.GetLastValid_EmptyHistory_ReturnsNullopt (0 ms)
+[ RUN      ] HistoryTest.GetAllPoints_ReturnsAllPoints
+[       OK ] HistoryTest.GetAllPoints_ReturnsAllPoints (0 ms)
+[ RUN      ] HistoryTest.Clear_RemovesAllPoints
+[       OK ] HistoryTest.Clear_RemovesAllPoints (0 ms)
+[----------] 8 tests from HistoryTest (0 ms total)
+
+[----------] 7 tests from SatelliteFilterTest
+[ RUN      ] SatelliteFilterTest.Process_Enabled_ValidPointWithEnoughSatellites_ReturnsPass
+[       OK ] SatelliteFilterTest.Process_Enabled_ValidPointWithEnoughSatellites_ReturnsPass (0 ms)
+[ RUN      ] SatelliteFilterTest.Process_Enabled_ValidPointWithNotEnoughSatellites_ReturnsReject
+[       OK ] SatelliteFilterTest.Process_Enabled_ValidPointWithNotEnoughSatellites_ReturnsReject (0 ms)
+[ RUN      ] SatelliteFilterTest.Process_Enabled_InvalidPoint_ReturnsReject
+[       OK ] SatelliteFilterTest.Process_Enabled_InvalidPoint_ReturnsReject (0 ms)
+[ RUN      ] SatelliteFilterTest.Process_Disabled_ReturnsPass
+[       OK ] SatelliteFilterTest.Process_Disabled_ReturnsPass (0 ms)
+[ RUN      ] SatelliteFilterTest.SetMinSatellites_ChangesThreshold
+[       OK ] SatelliteFilterTest.SetMinSatellites_ChangesThreshold (0 ms)
+[ RUN      ] SatelliteFilterTest.GetMinSatellites_ReturnsCorrectValue
+[       OK ] SatelliteFilterTest.GetMinSatellites_ReturnsCorrectValue (0 ms)
+[ RUN      ] SatelliteFilterTest.GetName_ReturnsCorrectName
+[       OK ] SatelliteFilterTest.GetName_ReturnsCorrectName (0 ms)
+[----------] 7 tests from SatelliteFilterTest (0 ms total)
+
+[----------] 8 tests from SpeedFilterTest
+[ RUN      ] SpeedFilterTest.Process_Enabled_ValidSpeed_ReturnsPass
+[       OK ] SpeedFilterTest.Process_Enabled_ValidSpeed_ReturnsPass (0 ms)
+[ RUN      ] SpeedFilterTest.Process_Enabled_SpeedTooHigh_ReturnsReject
+[       OK ] SpeedFilterTest.Process_Enabled_SpeedTooHigh_ReturnsReject (0 ms)
+[ RUN      ] SpeedFilterTest.Process_Enabled_NegativeSpeed_ReturnsReject
+[       OK ] SpeedFilterTest.Process_Enabled_NegativeSpeed_ReturnsReject (0 ms)
+[ RUN      ] SpeedFilterTest.Process_Enabled_InvalidPoint_ReturnsReject
+[       OK ] SpeedFilterTest.Process_Enabled_InvalidPoint_ReturnsReject (0 ms)
+[ RUN      ] SpeedFilterTest.Process_Disabled_ReturnsPass
+[       OK ] SpeedFilterTest.Process_Disabled_ReturnsPass (0 ms)
+[ RUN      ] SpeedFilterTest.SetMaxSpeed_ChangesThreshold
+[       OK ] SpeedFilterTest.SetMaxSpeed_ChangesThreshold (0 ms)
+[ RUN      ] SpeedFilterTest.GetMaxSpeed_ReturnsCorrectValue
+[       OK ] SpeedFilterTest.GetMaxSpeed_ReturnsCorrectValue (0 ms)
+[ RUN      ] SpeedFilterTest.GetName_ReturnsCorrectName
+[       OK ] SpeedFilterTest.GetName_ReturnsCorrectName (0 ms)
+[----------] 8 tests from SpeedFilterTest (0 ms total)
+
+[----------] 8 tests from JumpFilterTest
+[ RUN      ] JumpFilterTest.Process_Enabled_NoHistory_ReturnsPass
+[       OK ] JumpFilterTest.Process_Enabled_NoHistory_ReturnsPass (0 ms)
+[ RUN      ] JumpFilterTest.Process_Enabled_SmallJump_ReturnsPass
+[       OK ] JumpFilterTest.Process_Enabled_SmallJump_ReturnsPass (0 ms)
+[ RUN      ] JumpFilterTest.Process_Enabled_LargeJump_ReturnsReject
+[       OK ] JumpFilterTest.Process_Enabled_LargeJump_ReturnsReject (0 ms)
+[ RUN      ] JumpFilterTest.Process_Enabled_InvalidPoint_ReturnsReject
+[       OK ] JumpFilterTest.Process_Enabled_InvalidPoint_ReturnsReject (0 ms)
+[ RUN      ] JumpFilterTest.Process_Disabled_ReturnsPass
+[       OK ] JumpFilterTest.Process_Disabled_ReturnsPass (0 ms)
+[ RUN      ] JumpFilterTest.SetMaxJump_ChangesThreshold
+[       OK ] JumpFilterTest.SetMaxJump_ChangesThreshold (0 ms)
+[ RUN      ] JumpFilterTest.GetMaxJump_ReturnsCorrectValue
+[       OK ] JumpFilterTest.GetMaxJump_ReturnsCorrectValue (0 ms)
+[ RUN      ] JumpFilterTest.GetName_ReturnsCorrectName
+[       OK ] JumpFilterTest.GetName_ReturnsCorrectName (0 ms)
+[----------] 8 tests from JumpFilterTest (0 ms total)
+
+[----------] 8 tests from StopFilterTest
+[ RUN      ] StopFilterTest.Process_Enabled_SpeedAboveThreshold_ReturnsPass
+[       OK ] StopFilterTest.Process_Enabled_SpeedAboveThreshold_ReturnsPass (0 ms)
+[ RUN      ] StopFilterTest.Process_Enabled_SpeedBelowThreshold_NoHistory_ReturnsStop
+[       OK ] StopFilterTest.Process_Enabled_SpeedBelowThreshold_NoHistory_ReturnsStop (0 ms)
+[ RUN      ] StopFilterTest.Process_Enabled_SpeedBelowThreshold_WithHistory_ReturnsStopAndModifiesPoint
+[       OK ] StopFilterTest.Process_Enabled_SpeedBelowThreshold_WithHistory_ReturnsStopAndModifiesPoint (0 ms)
+[ RUN      ] StopFilterTest.Process_Enabled_InvalidPoint_ReturnsReject
+[       OK ] StopFilterTest.Process_Enabled_InvalidPoint_ReturnsReject (0 ms)
+[ RUN      ] StopFilterTest.Process_Disabled_ReturnsPass
+[       OK ] StopFilterTest.Process_Disabled_ReturnsPass (0 ms)
+[ RUN      ] StopFilterTest.SetThreshold_ChangesThreshold
+[       OK ] StopFilterTest.SetThreshold_ChangesThreshold (0 ms)
+[ RUN      ] StopFilterTest.GetThreshold_ReturnsCorrectValue
+[       OK ] StopFilterTest.GetThreshold_ReturnsCorrectValue (0 ms)
+[ RUN      ] StopFilterTest.GetName_ReturnsCorrectName
+[       OK ] StopFilterTest.GetName_ReturnsCorrectName (0 ms)
+[----------] 8 tests from StopFilterTest (0 ms total)
+
+[----------] 8 tests from ConsoleDisplayTest
+[ RUN      ] ConsoleDisplayTest.ShowPoint_ValidPoint_FormatsCorrectly
+[       OK ] ConsoleDisplayTest.ShowPoint_ValidPoint_FormatsCorrectly (0 ms)
+[ RUN      ] ConsoleDisplayTest.ShowPoint_ZeroSpeed_ShowsStopped
+[       OK ] ConsoleDisplayTest.ShowPoint_ZeroSpeed_ShowsStopped (0 ms)
+[ RUN      ] ConsoleDisplayTest.ShowPoint_NegativeLatitude_ShowsSouth
+[       OK ] ConsoleDisplayTest.ShowPoint_NegativeLatitude_ShowsSouth (0 ms)
+[ RUN      ] ConsoleDisplayTest.ShowPoint_NegativeLongitude_ShowsWest
+[       OK ] ConsoleDisplayTest.ShowPoint_NegativeLongitude_ShowsWest (0 ms)
+[ RUN      ] ConsoleDisplayTest.ShowInvalidFix_FormatsCorrectly
+[       OK ] ConsoleDisplayTest.ShowInvalidFix_FormatsCorrectly (0 ms)
+[ RUN      ] ConsoleDisplayTest.ShowParseError_FormatsCorrectly
+[       OK ] ConsoleDisplayTest.ShowParseError_FormatsCorrectly (0 ms)
+[ RUN      ] ConsoleDisplayTest.ShowRejected_FormatsCorrectly
+[       OK ] ConsoleDisplayTest.ShowRejected_FormatsCorrectly (0 ms)
+[ RUN      ] ConsoleDisplayTest.Clear_DoesNothing
+[       OK ] ConsoleDisplayTest.Clear_DoesNothing (0 ms)
+[----------] 8 tests from ConsoleDisplayTest (0 ms total)
+
+[----------] 10 tests from MockDisplayTest
+[ RUN      ] MockDisplayTest.ShowPoint_AddsCall
+[       OK ] MockDisplayTest.ShowPoint_AddsCall (0 ms)
+[ RUN      ] MockDisplayTest.ShowInvalidFix_AddsCall
+[       OK ] MockDisplayTest.ShowInvalidFix_AddsCall (0 ms)
+[ RUN      ] MockDisplayTest.ShowParseError_AddsCall
+[       OK ] MockDisplayTest.ShowParseError_AddsCall (0 ms)
+[ RUN      ] MockDisplayTest.ShowRejected_AddsCall
+[       OK ] MockDisplayTest.ShowRejected_AddsCall (0 ms)
+[ RUN      ] MockDisplayTest.Clear_RemovesAllCalls
+[       OK ] MockDisplayTest.Clear_RemovesAllCalls (0 ms)
+[ RUN      ] MockDisplayTest.Reset_ClearsCalls
+[       OK ] MockDisplayTest.Reset_ClearsCalls (0 ms)
+[ RUN      ] MockDisplayTest.HasPointWithTime_ReturnsTrueWhenExists
+[       OK ] MockDisplayTest.HasPointWithTime_ReturnsTrueWhenExists (0 ms)
+[ RUN      ] MockDisplayTest.GetPointCount_ReturnsCorrectCount
+[       OK ] MockDisplayTest.GetPointCount_ReturnsCorrectCount (0 ms)
+[ RUN      ] MockDisplayTest.GetInvalidFixCount_ReturnsCorrectCount
+[       OK ] MockDisplayTest.GetInvalidFixCount_ReturnsCorrectCount (0 ms)
+[ RUN      ] MockDisplayTest.GetErrorCount_ReturnsCorrectCount
+[       OK ] MockDisplayTest.GetErrorCount_ReturnsCorrectCount (0 ms)
+[----------] 10 tests from MockDisplayTest (0 ms total)
+
+[----------] 12 tests from PipelineTest
+[ RUN      ] PipelineTest.Process_ValidRMCAndGGA_UpdatesStatistics
+[       OK ] PipelineTest.Process_ValidRMCAndGGA_UpdatesStatistics (0 ms)
+[ RUN      ] PipelineTest.Process_InvalidChecksum_IncreasesErrorCount
+[       OK ] PipelineTest.Process_InvalidChecksum_IncreasesErrorCount (0 ms)
+[ RUN      ] PipelineTest.Process_InvalidStatus_NoValidPoint
+[       OK ] PipelineTest.Process_InvalidStatus_NoValidPoint (0 ms)
+[ RUN      ] PipelineTest.Process_WithSatelliteFilter_RejectsLowSatellites
+[       OK ] PipelineTest.Process_WithSatelliteFilter_RejectsLowSatellites (0 ms)
+[ RUN      ] PipelineTest.Process_WithSpeedFilter_RejectsHighSpeed
+[       OK ] PipelineTest.Process_WithSpeedFilter_RejectsHighSpeed (0 ms)
+[ RUN      ] PipelineTest.Process_WithJumpFilter_RejectsLargeJump
+[       OK ] PipelineTest.Process_WithJumpFilter_RejectsLargeJump (0 ms)
+[ RUN      ] PipelineTest.Process_WithStopFilter_ModifiesPoint
+[       OK ] PipelineTest.Process_WithStopFilter_ModifiesPoint (0 ms)
+[ RUN      ] PipelineTest.Process_MultipleFilters_RespectsPriority
+[       OK ] PipelineTest.Process_MultipleFilters_RespectsPriority (0 ms)
+[ RUN      ] PipelineTest.GetStatistics_ReturnsCorrectCounts
+[       OK ] PipelineTest.GetStatistics_ReturnsCorrectCounts (0 ms)
+[ RUN      ] PipelineTest.Process_EmptyLine_NoChanges
+[       OK ] PipelineTest.Process_EmptyLine_NoChanges (0 ms)
+[ RUN      ] PipelineTest.Process_MultipleLines_CorrectStatistics
+[       OK ] PipelineTest.Process_MultipleLines_CorrectStatistics (0 ms)
+[ RUN      ] PipelineTest.Process_WithDisabledFilter_DoesNotReject
+[       OK ] PipelineTest.Process_WithDisabledFilter_DoesNotReject (0 ms)
+[----------] 12 tests from PipelineTest (0 ms total)
+
+[----------] 15 tests from SmoothingFilterTest
+[ RUN      ] SmoothingFilterTest.Process_Enabled_ValidPoint_ReturnsPass
+[       OK ] SmoothingFilterTest.Process_Enabled_ValidPoint_ReturnsPass (0 ms)
+[ RUN      ] SmoothingFilterTest.Process_Enabled_InvalidPoint_ReturnsPassWithoutSmoothing
+[       OK ] SmoothingFilterTest.Process_Enabled_InvalidPoint_ReturnsPassWithoutSmoothing (0 ms)
+[ RUN      ] SmoothingFilterTest.Process_Disabled_ReturnsPass
+[       OK ] SmoothingFilterTest.Process_Disabled_ReturnsPass (0 ms)
+[ RUN      ] SmoothingFilterTest.Process_FirstPoint_NoSmoothing
+[       OK ] SmoothingFilterTest.Process_FirstPoint_NoSmoothing (0 ms)
+[ RUN      ] SmoothingFilterTest.Process_SmoothingEffect
+[       OK ] SmoothingFilterTest.Process_SmoothingEffect (0 ms)
+[ RUN      ] SmoothingFilterTest.Process_SpeedAndAltitudeSmoothing
+[       OK ] SmoothingFilterTest.Process_SpeedAndAltitudeSmoothing (0 ms)
+[ RUN      ] SmoothingFilterTest.SetCutoffFrequency_ChangesSmoothing
+[       OK ] SmoothingFilterTest.SetCutoffFrequency_ChangesSmoothing (0 ms)
+[ RUN      ] SmoothingFilterTest.GetCutoffFrequency_ReturnsCorrectValue
+[       OK ] SmoothingFilterTest.GetCutoffFrequency_ReturnsCorrectValue (0 ms)
+[ RUN      ] SmoothingFilterTest.SetSampleRate_ChangesSmoothing
+[       OK ] SmoothingFilterTest.SetSampleRate_ChangesSmoothing (0 ms)
+[ RUN      ] SmoothingFilterTest.GetSampleRate_ReturnsCorrectValue
+[       OK ] SmoothingFilterTest.GetSampleRate_ReturnsCorrectValue (0 ms)
+[ RUN      ] SmoothingFilterTest.Process_MultiplePoints_ProgressiveSmoothing
+[       OK ] SmoothingFilterTest.Process_MultiplePoints_ProgressiveSmoothing (0 ms)
+[ RUN      ] SmoothingFilterTest.Process_ZeroSpeed_KeepsZero
+[       OK ] SmoothingFilterTest.Process_ZeroSpeed_KeepsZero (0 ms)
+[ RUN      ] SmoothingFilterTest.Process_NegativeValues_HandledCorrectly
+[       OK ] SmoothingFilterTest.Process_NegativeValues_HandledCorrectly (0 ms)
+[ RUN      ] SmoothingFilterTest.GetName_ReturnsCorrectName
+[       OK ] SmoothingFilterTest.GetName_ReturnsCorrectName (0 ms)
+[ RUN      ] SmoothingFilterTest.IsEnabled_ReturnsCorrectState
+[       OK ] SmoothingFilterTest.IsEnabled_ReturnsCorrectState (0 ms)
+[----------] 15 tests from SmoothingFilterTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 97 tests from 10 test suites ran. (1 ms total)
+[  PASSED  ] 97 tests.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"GpsTests" end time: Feb 16 16:16 +05
+"GpsTests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Feb 16 16:16 +05

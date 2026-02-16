@@ -1,0 +1,50 @@
+{
+    "historySize": 20,
+    "displayType": "file",
+    "outputFile": "gps_output.log",
+    "fileRotation": true,
+    "maxFileSize": 1048576,
+    "filters": [
+        {
+            "type": "SatelliteFilter",
+            "enabled": true,
+            "priority": 1,
+            "params": {
+                "minSatellites": 4
+            }
+        },
+        {
+            "type": "SpeedFilter",
+            "enabled": true,
+            "priority": 2,
+            "params": {
+                "maxSpeed": 250.0
+            }
+        },
+        {
+            "type": "JumpFilter",
+            "enabled": true,
+            "priority": 3,
+            "params": {
+                "maxJump": 50.0
+            }
+        },
+        {
+            "type": "StopFilter",
+            "enabled": true,
+            "priority": 4,
+            "params": {
+                "threshold": 2.5
+            }
+        },
+        {
+            "type": "SmoothingFilter",
+            "enabled": true,
+            "priority": 5,
+            "params": {
+                "cutoffFrequency": 0.2,
+                "sampleRate": 2.0
+            }
+        }
+    ]
+}

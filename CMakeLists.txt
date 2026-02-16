@@ -26,6 +26,9 @@ add_library(gps_core
     src/console_display.cpp
     src/mock_display.cpp
     src/pipeline.cpp
+    src/smoothing_filter.cpp
+    src/json_config.cpp
+    src/file_display.cpp
 )
 
 target_include_directories(gps_core PUBLIC include)
@@ -51,6 +54,7 @@ if(BUILD_TESTS)
         tests/test_console_display.cpp
         tests/test_mock_display.cpp
         tests/test_pipeline.cpp
+        tests/test_smoothing_filter.cpp
     )
     
     target_include_directories(gps_tests PRIVATE include)

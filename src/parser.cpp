@@ -11,6 +11,7 @@ NmeaParser::~NmeaParser() = default;
 void NmeaParser::reset() {
     lastRMC_.reset();
     lastGGA_.reset();
+    lastGSV_.reset();
 }
 
 bool NmeaParser::validateChecksum(const std::string& line) {
@@ -30,7 +31,7 @@ bool NmeaParser::validateChecksum(const std::string& line) {
     std::stringstream ss;
     ss << std::hex << checksumStr;
     ss >> expected;
- 
+    
     return calculated == static_cast<unsigned char>(expected);
 }
 
@@ -90,6 +91,7 @@ std::vector<std::string> NmeaParser::splitFields(const std::string& line) const 
 }
 
 std::optional<nmea::RMCData> NmeaParser::parseRMC(const std::vector<std::string>& fields) {
+    if (fields.size() < 12) return std::nullopt;
     
     nmea::RMCData data;
     
@@ -130,6 +132,7 @@ std::optional<nmea::RMCData> NmeaParser::parseRMC(const std::vector<std::string>
 }
 
 std::optional<nmea::GGAData> NmeaParser::parseGGA(const std::vector<std::string>& fields) {
+    if (fields.size() < 14) return std::nullopt;
     
     nmea::GGAData data;
     
@@ -175,6 +178,38 @@ std::optional<nmea::GGAData> NmeaParser::parseGGA(const std::vector<std::string>
     return data;
 }
 
+std::optional<nmea::GSVData> NmeaParser::parseGSV(const std::vector<std::string>& fields) {
+    if (fields.size() < 4) return std::nullopt;
+    
+    nmea::GSVData data;
+    
+    // $GPGSV,3,1,12,01,40,230,45,02,35,180,42,03,30,120,40,04,25,090,38*7F
+    // 1) total messages
+    // 2) message number
+    // 3) total satellites
+    // 4-n) satellite info (4 fields per satellite)
+    
+    try {
+        data.totalMessages = std::stoi(fields[1]);
+        data.messageNumber = std::stoi(fields[2]);
+        data.totalSatellites = std::stoi(fields[3]);
+        
+        // Парсинг информации о спутниках (по 4 поля на спутник)
+        for (size_t i = 4; i + 3 < fields.size(); i += 4) {
+            if (!fields[i].empty()) {
+                data.prn.push_back(std::stoi(fields[i]));
+                data.elevation.push_back(std::stoi(fields[i+1]));
+                data.azimuth.push_back(std::stoi(fields[i+2]));
+                data.snr.push_back(std::stoi(fields[i+3]));
+            }
+        }
+    } catch (...) {
+        return std::nullopt;
+    }
+    
+    return data;
+}
+
 std::optional<GpsPoint> NmeaParser::combineData(const nmea::RMCData& rmc, const nmea::GGAData& gga) {
     GpsPoint point;
     
@@ -203,33 +238,44 @@ std::optional<GpsPoint> NmeaParser::parseLine(const std::string& line) {
     GpsPoint point;
     bool parsed = false;
     
-    if (type.length() >= 6 && type.substr(3, 3) == "RMC") {
-        auto rmc = parseRMC(fields);
-        if (rmc.has_value()) {
-            lastRMC_ = rmc;
-            // Пытаемся создать точку только из RMC данных
-            point.timestamp = rmc->timestamp;
-            point.latitude = convertNmeaCoordinate(rmc->latitude, rmc->latHemisphere);
-            point.longitude = convertNmeaCoordinate(rmc->longitude, rmc->lonHemisphere);
-            point.speed = knotsToKmh(rmc->speedKnots);
-            point.course = rmc->course;
-            point.isValid = rmc->valid;
-            parsed = true;
+    if (type.length() >= 6) {
+        std::string msgType = type.substr(3, 3);
+        
+        if (msgType == "RMC") {
+            auto rmc = parseRMC(fields);
+            if (rmc.has_value()) {
+                lastRMC_ = rmc;
+                // Пытаемся создать точку только из RMC данных
+                point.timestamp = rmc->timestamp;
+                point.latitude = convertNmeaCoordinate(rmc->latitude, rmc->latHemisphere);
+                point.longitude = convertNmeaCoordinate(rmc->longitude, rmc->lonHemisphere);
+                point.speed = knotsToKmh(rmc->speedKnots);
+                point.course = rmc->course;
+                point.isValid = rmc->valid;
+                parsed = true;
+            }
         }
-    }
-    else if (type.length() >= 6 && type.substr(3, 3) == "GGA") {
-        auto gga = parseGGA(fields);
-        if (gga.has_value()) {
-            lastGGA_ = gga;
-            // Пытаемся создать точку только из GGA данных
-            point.timestamp = gga->timestamp;
-            point.latitude = convertNmeaCoordinate(gga->latitude, gga->latHemisphere);
-            point.longitude = convertNmeaCoordinate(gga->longitude, gga->lonHemisphere);
-            point.altitude = gga->altitude;
-            point.satellites = gga->satellites;
-            point.hdop = gga->hdop;
-            point.isValid = (gga->quality > 0);
-            parsed = true;
+        else if (msgType == "GGA") {
+            auto gga = parseGGA(fields);
+            if (gga.has_value()) {
+                lastGGA_ = gga;
+                // Пытаемся создать точку только из GGA данных
+                point.timestamp = gga->timestamp;
+                point.latitude = convertNmeaCoordinate(gga->latitude, gga->latHemisphere);
+                point.longitude = convertNmeaCoordinate(gga->longitude, gga->lonHemisphere);
+                point.altitude = gga->altitude;
+                point.satellites = gga->satellites;
+                point.hdop = gga->hdop;
+                point.isValid = (gga->quality > 0);
+                parsed = true;
+            }
+        }
+        else if (msgType == "GSV") {
+            auto gsv = parseGSV(fields);
+            if (gsv.has_value()) {
+                lastGSV_ = gsv;
+                // GSV сам по себе не создает точку, только сохраняем информацию
+            }
         }
     }
     
@@ -250,4 +296,8 @@ std::optional<GpsPoint> NmeaParser::parseLine(const std::string& line) {
     }
     
     return std::nullopt;
+}
+
+std::optional<nmea::GSVData> NmeaParser::getLastGSV() const {
+    return lastGSV_;
 }

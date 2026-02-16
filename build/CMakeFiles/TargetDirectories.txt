@@ -1,0 +1,6 @@
+/home/amartyanov/git/gps_pipeline/build/CMakeFiles/gps_core.dir
+/home/amartyanov/git/gps_pipeline/build/CMakeFiles/gps_pipeline.dir
+/home/amartyanov/git/gps_pipeline/build/CMakeFiles/gps_tests.dir
+/home/amartyanov/git/gps_pipeline/build/CMakeFiles/test.dir
+/home/amartyanov/git/gps_pipeline/build/CMakeFiles/edit_cache.dir
+/home/amartyanov/git/gps_pipeline/build/CMakeFiles/rebuild_cache.dir

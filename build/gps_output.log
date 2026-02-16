@@ -1,0 +1,40 @@
+[12:00:00] Coordinates: 55.75206°N, 37.65946°E
+               Speed: 46.3 km/h, Course: 45.0°
+               Altitude: 0m, Satellites: 0, HDOP: 0.0
+[12:00:00] Coordinates: 55.75206°N, 37.65946°E
+               Speed: 46.3 km/h, Course: 45.0°
+               Altitude: 58m, Satellites: 10, HDOP: 0.8
+[12:00:01] Coordinates: 55.75206°N, 37.65946°E
+               Speed: 0.0 km/h (stopped), Course: 45.0°
+               Altitude: 0m, Satellites: 0, HDOP: 0.0
+[12:00:01] Coordinates: 55.75206°N, 37.65946°E
+               Speed: 0.0 km/h (stopped), Course: 45.0°
+               Altitude: 150m, Satellites: 10, HDOP: 0.8
+Point rejected: JumpFilter: point rejected
+Point rejected: JumpFilter: point rejected
+[12:00:03] Coordinates: 55.75206°N, 37.65946°E
+               Speed: 46.3 km/h, Course: 45.0°
+               Altitude: 0m, Satellites: 0, HDOP: 0.0
+Point rejected: SatelliteFilter: point rejected
+[12:00:04] No valid GPS fix
+Parse error: invalid checksum or message format
+[12:00:00] Coordinates: 55.75206°N, 37.65946°E
+               Speed: 46.3 km/h, Course: 45.0°
+               Altitude: 0m, Satellites: 0, HDOP: 0.0
+[12:00:00] Coordinates: 55.75206°N, 37.65946°E
+               Speed: 46.3 km/h, Course: 45.0°
+               Altitude: 58m, Satellites: 10, HDOP: 0.8
+[12:00:01] Coordinates: 55.75206°N, 37.65946°E
+               Speed: 0.0 km/h (stopped), Course: 45.0°
+               Altitude: 0m, Satellites: 0, HDOP: 0.0
+[12:00:01] Coordinates: 55.75206°N, 37.65946°E
+               Speed: 0.0 km/h (stopped), Course: 45.0°
+               Altitude: 150m, Satellites: 10, HDOP: 0.8
+Point rejected: JumpFilter: point rejected
+Point rejected: JumpFilter: point rejected
+[12:00:03] Coordinates: 55.75206°N, 37.65946°E
+               Speed: 46.3 km/h, Course: 45.0°
+               Altitude: 0m, Satellites: 0, HDOP: 0.0
+Point rejected: SatelliteFilter: point rejected
+[12:00:04] No valid GPS fix
+Parse error: invalid checksum or message format
