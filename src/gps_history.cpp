@@ -1,4 +1,4 @@
-#include "history.h"
+#include "infra/gps_history.h"
 
 GpsHistory::GpsHistory(size_t maxSize) : maxSize_(maxSize) {}
 
@@ -45,7 +45,6 @@ bool GpsHistory::empty() const {
 void GpsHistory::setMaxSize(size_t maxSize) {
     std::lock_guard<std::mutex> lock(mutex_);
     maxSize_ = maxSize;
-    // Если текущий размер превышает новый максимум, удаляем лишние точки
     while (points_.size() > maxSize_) {
         points_.pop_front();
     }

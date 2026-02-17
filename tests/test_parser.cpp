@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
-#include "parser.h"
-#include "gps_point.h"
+#include "infra/nmea_parser.h"
+#include "domain/gps_point.h"
 
 class ParserTest : public ::testing::Test {
 protected:
     void SetUp() override {
         parser.reset();
     }
-    
+
     NmeaParser parser;
 };
 
@@ -59,7 +59,7 @@ TEST_F(ParserTest, ParseTimeToMs_ValidTime_ReturnsMilliseconds) {
 TEST_F(ParserTest, ParseLine_ValidRMCAndGGA_ReturnsGpsPoint) {
     parser.parseLine("$GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,,,*3D");
     auto point = parser.parseLine("$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,47.0,M,,*4F");
-    
+
     ASSERT_TRUE(point.has_value());
     EXPECT_NEAR(point->latitude, 48.1173, 0.0001);
     EXPECT_NEAR(point->longitude, 11.5167, 0.0001);
@@ -79,7 +79,7 @@ TEST_F(ParserTest, ParseLine_InvalidChecksum_ReturnsNullopt) {
 TEST_F(ParserTest, ParseLine_InvalidStatus_ReturnsInvalidPoint) {
     parser.parseLine("$GPRMC,123519,V,4807.038,N,01131.000,E,022.4,084.4,230394,,,*2A");
     auto point = parser.parseLine("$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,47.0,M,,*4F");
-    
+
     ASSERT_TRUE(point.has_value());
     EXPECT_FALSE(point->isValid);
 }
@@ -87,6 +87,17 @@ TEST_F(ParserTest, ParseLine_InvalidStatus_ReturnsInvalidPoint) {
 TEST_F(ParserTest, ParseLine_DifferentTimestamps_NoPoint) {
     parser.parseLine("$GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,,,*3D");
     auto point = parser.parseLine("$GPGGA,123520,4807.038,N,01131.000,E,1,08,0.9,545.4,M,47.0,M,,*4D");
-    
+
     EXPECT_FALSE(point.has_value());
+}
+
+TEST_F(ParserTest, ImplementsIParserInterface) {
+    IParser* iparser = &parser;
+    iparser->reset();
+
+    iparser->parseLine("$GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,,,*3D");
+    auto point = iparser->parseLine("$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,47.0,M,,*4F");
+
+    ASSERT_TRUE(point.has_value());
+    EXPECT_TRUE(point->isValid);
 }

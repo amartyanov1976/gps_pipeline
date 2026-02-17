@@ -17,17 +17,17 @@ class JsonConfig {
 public:
     JsonConfig();
     explicit JsonConfig(const std::string& filename);
-    
+
     bool loadFromFile(const std::string& filename);
     bool saveToFile(const std::string& filename) const;
-    
+
     int getHistorySize() const { return historySize_; }
     const std::string& getDisplayType() const { return displayType_; }
     const std::string& getOutputFile() const { return outputFile_; }
     bool isFileRotation() const { return fileRotation_; }
     size_t getMaxFileSize() const { return maxFileSize_; }
     const std::vector<FilterConfig>& getFilters() const { return filters_; }
-    
+
     void setHistorySize(int size) { historySize_ = size; }
     void setDisplayType(const std::string& type) { displayType_ = type; }
     void setOutputFile(const std::string& file) { outputFile_ = file; }
@@ -35,7 +35,7 @@ public:
     void setMaxFileSize(size_t size) { maxFileSize_ = size; }
     void addFilter(const FilterConfig& filter) { filters_.push_back(filter); }
     void clearFilters() { filters_.clear(); }
-    
+
     bool isValid() const { return valid_; }
 
 private:
@@ -44,7 +44,7 @@ private:
     std::string extractValue(const std::string& json, const std::string& key) const;
     std::vector<std::string> extractArray(const std::string& json, const std::string& key) const;
     std::map<std::string, std::string> extractObject(const std::string& json) const;
-    
+
     int historySize_ = 10;
     std::string displayType_ = "console";
     std::string outputFile_;

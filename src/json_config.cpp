@@ -1,4 +1,4 @@
-#include "json_config.h"
+#include "infra/json_config.h"
 #include <cctype>
 #include <iostream>
 #include <algorithm>
@@ -12,7 +12,7 @@ JsonConfig::JsonConfig(const std::string& filename) {
 std::string JsonConfig::readFile(const std::string& filename) const {
     std::ifstream file(filename);
     if (!file.is_open()) return "";
-    
+
     std::stringstream buffer;
     buffer << file.rdbuf();
     return buffer.str();
@@ -28,36 +28,31 @@ std::string JsonConfig::trim(const std::string& str) const {
 std::map<std::string, std::string> JsonConfig::extractObject(const std::string& json) const {
     std::map<std::string, std::string> result;
     size_t pos = 0;
-    
+
     while (pos < json.length()) {
-        // Поиск ключа
         size_t keyStart = json.find('"', pos);
         if (keyStart == std::string::npos) break;
-        
+
         size_t keyEnd = json.find('"', keyStart + 1);
         if (keyEnd == std::string::npos) break;
-        
+
         std::string key = json.substr(keyStart + 1, keyEnd - keyStart - 1);
-        
-        // Поиск значения
+
         size_t colonPos = json.find(':', keyEnd);
         if (colonPos == std::string::npos) break;
-        
+
         size_t valueStart = colonPos + 1;
         while (valueStart < json.length() && std::isspace(json[valueStart])) valueStart++;
-        
+
         if (valueStart >= json.length()) break;
-        
-        // Определяем тип значения
+
         if (json[valueStart] == '"') {
-            // Строковое значение
             size_t valueEnd = json.find('"', valueStart + 1);
             if (valueEnd == std::string::npos) break;
             result[key] = json.substr(valueStart, valueEnd - valueStart + 1);
             pos = valueEnd + 1;
         }
         else if (json[valueStart] == '{' || json[valueStart] == '[') {
-            // Объект или массив
             char closingChar = (json[valueStart] == '{') ? '}' : ']';
             size_t valueEnd = json.find(closingChar, valueStart + 1);
             if (valueEnd == std::string::npos) break;
@@ -65,17 +60,15 @@ std::map<std::string, std::string> JsonConfig::extractObject(const std::string& 
             pos = valueEnd + 1;
         }
         else {
-            // Число или булево
             size_t valueEnd = json.find_first_of(",}", valueStart);
             if (valueEnd == std::string::npos) valueEnd = json.length();
             result[key] = json.substr(valueStart, valueEnd - valueStart);
             pos = valueEnd;
         }
-        
-        // Поиск следующей пары
+
         pos = json.find_first_not_of(" \t\n\r,", pos);
     }
-    
+
     return result;
 }
 
@@ -83,15 +76,15 @@ std::string JsonConfig::extractValue(const std::string& json, const std::string&
     std::string searchKey = "\"" + key + "\"";
     size_t keyPos = json.find(searchKey);
     if (keyPos == std::string::npos) return "";
-    
+
     size_t colonPos = json.find(':', keyPos + searchKey.length());
     if (colonPos == std::string::npos) return "";
-    
+
     size_t valueStart = colonPos + 1;
     while (valueStart < json.length() && std::isspace(json[valueStart])) valueStart++;
-    
+
     if (valueStart >= json.length()) return "";
-    
+
     if (json[valueStart] == '"') {
         size_t valueEnd = json.find('"', valueStart + 1);
         if (valueEnd == std::string::npos) return "";
@@ -113,43 +106,39 @@ std::string JsonConfig::extractValue(const std::string& json, const std::string&
 
 std::vector<std::string> JsonConfig::extractArray(const std::string& json, const std::string& key) const {
     std::vector<std::string> result;
-    
+
     std::string arrayStr = extractValue(json, key);
     if (arrayStr.empty() || arrayStr[0] != '[') return result;
-    
-    size_t pos = 1; // пропускаем '['
+
+    size_t pos = 1;
     while (pos < arrayStr.length()) {
-        // Пропускаем пробелы
         while (pos < arrayStr.length() && std::isspace(arrayStr[pos])) pos++;
         if (pos >= arrayStr.length() || arrayStr[pos] == ']') break;
-        
+
         if (arrayStr[pos] == '{') {
-            // Находим конец объекта
             size_t objStart = pos;
             int braceCount = 1;
             pos++;
-            
+
             while (pos < arrayStr.length() && braceCount > 0) {
                 if (arrayStr[pos] == '{') braceCount++;
                 else if (arrayStr[pos] == '}') braceCount--;
                 pos++;
             }
-            
+
             result.push_back(arrayStr.substr(objStart, pos - objStart));
         }
         else {
-            // Простое значение
             size_t valueStart = pos;
             while (pos < arrayStr.length() && arrayStr[pos] != ',' && arrayStr[pos] != ']') {
                 pos++;
             }
             result.push_back(arrayStr.substr(valueStart, pos - valueStart));
         }
-        
-        // Пропускаем запятую
+
         if (pos < arrayStr.length() && arrayStr[pos] == ',') pos++;
     }
-    
+
     return result;
 }
 
@@ -159,43 +148,40 @@ bool JsonConfig::loadFromFile(const std::string& filename) {
         valid_ = false;
         return false;
     }
-    
+
     auto root = extractObject(json);
-    
-    // Парсим основные поля
+
     auto it = root.find("historySize");
     if (it != root.end()) historySize_ = std::stoi(trim(it->second));
-    
+
     it = root.find("displayType");
     if (it != root.end()) displayType_ = trim(it->second);
-    
+
     it = root.find("outputFile");
     if (it != root.end()) outputFile_ = trim(it->second);
-    
+
     it = root.find("fileRotation");
     if (it != root.end()) fileRotation_ = (trim(it->second) == "true");
-    
+
     it = root.find("maxFileSize");
     if (it != root.end()) maxFileSize_ = std::stoul(trim(it->second));
-    
-    // Парсим фильтры
+
     filters_.clear();
     auto filterStrings = extractArray(json, "filters");
-    
+
     for (const auto& filterStr : filterStrings) {
         auto filterObj = extractObject(filterStr);
         FilterConfig filter;
-        
+
         auto fit = filterObj.find("type");
         if (fit != filterObj.end()) filter.type = trim(fit->second);
-        
+
         fit = filterObj.find("enabled");
         if (fit != filterObj.end()) filter.enabled = (trim(fit->second) == "true");
-        
+
         fit = filterObj.find("priority");
         if (fit != filterObj.end()) filter.priority = std::stoi(trim(fit->second));
-        
-        // Парсим параметры
+
         fit = filterObj.find("params");
         if (fit != filterObj.end()) {
             auto paramsObj = extractObject(fit->second);
@@ -205,10 +191,10 @@ bool JsonConfig::loadFromFile(const std::string& filename) {
                 } catch (...) {}
             }
         }
-        
+
         filters_.push_back(filter);
     }
-    
+
     valid_ = true;
     return true;
 }
@@ -216,7 +202,7 @@ bool JsonConfig::loadFromFile(const std::string& filename) {
 bool JsonConfig::saveToFile(const std::string& filename) const {
     std::ofstream file(filename);
     if (!file.is_open()) return false;
-    
+
     file << "{\n";
     file << "  \"historySize\": " << historySize_ << ",\n";
     file << "  \"displayType\": \"" << displayType_ << "\",\n";
@@ -224,7 +210,7 @@ bool JsonConfig::saveToFile(const std::string& filename) const {
     file << "  \"fileRotation\": " << (fileRotation_ ? "true" : "false") << ",\n";
     file << "  \"maxFileSize\": " << maxFileSize_ << ",\n";
     file << "  \"filters\": [\n";
-    
+
     for (size_t i = 0; i < filters_.size(); i++) {
         const auto& filter = filters_[i];
         file << "    {\n";
@@ -232,7 +218,7 @@ bool JsonConfig::saveToFile(const std::string& filename) const {
         file << "      \"enabled\": " << (filter.enabled ? "true" : "false") << ",\n";
         file << "      \"priority\": " << filter.priority << ",\n";
         file << "      \"params\": {\n";
-        
+
         size_t j = 0;
         for (const auto& [key, value] : filter.params) {
             file << "        \"" << key << "\": " << value;
@@ -240,15 +226,15 @@ bool JsonConfig::saveToFile(const std::string& filename) const {
             file << "\n";
             j++;
         }
-        
+
         file << "      }\n";
         file << "    }";
         if (i < filters_.size() - 1) file << ",";
         file << "\n";
     }
-    
+
     file << "  ]\n";
     file << "}\n";
-    
+
     return true;
 }
